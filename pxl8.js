@@ -1,5 +1,5 @@
 // Constructor for a pixel canvas object
-function PixelCanvas(width, height, pxSize, dom) {
+function PixelCanvas(width, height, pxSize, dom, fun) {
   var box = document.createElement("div");
   for (var i = 0; i < height; i++) {
     var row = document.createElement("div");
@@ -12,6 +12,9 @@ function PixelCanvas(width, height, pxSize, dom) {
       pixel.style.backgroundColor = "cornflowerblue";
       pixel.id = "_" + i + "_" + j;
       row.appendChild(pixel);
+      if (fun) {
+        fun(pixel);
+      }
     }
     box.appendChild(row);
   }
