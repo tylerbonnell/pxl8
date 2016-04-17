@@ -5,17 +5,16 @@ function PixelCanvas(width, height, pxSize, dom) {
     var row = document.createElement("div");
     row.style.float = "left";
     row.style.clear = "left";
-    row.style.height = pxSize;
     for (var j = 0; j < width; j++) {
       var pixel = document.createElement("div");
-      pixel.style.width = pxSize;
-      pixel.style.height = "100%";
+      pixel.style.width = pixel.style.height = pxSize + "px";
       pixel.style.float = "left";
-      pixel.style.backgroundColor = "white";
+      pixel.style.backgroundColor = "cornflowerblue";
       pixel.id = "_" + i + "_" + j;
       row.appendChild(pixel);
     }
     box.appendChild(row);
   }
+  box.id = "PixelCanvas";
   dom.appendChild(box);
 }

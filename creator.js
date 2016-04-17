@@ -1,5 +1,5 @@
 window.onload = function() {
-  var canvas = new PixelCanvas(50, 50, "5px", $("#grid"));
+  var canvas = new PixelCanvas(50, 50, 5, $("body"));
 };
 
 function $(el) {
