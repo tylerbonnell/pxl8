@@ -1,4 +1,11 @@
-// Constructor for a pixel canvas object
+/*
+  Constructor for a pixel canvas object
+  Parameters: width/height of canvas in pixels, size of pixels
+  (in pixels, how meta), and the DOM object to append the
+  PixelCanvas to. Optionally, can pass a function that takes
+  a pixel object as a parameter and applies that function to
+  each pixel. (Use this for setting listeners on each pixel).
+*/
 function PixelCanvas(width, height, pxSize, dom, fun) {
   var box = document.createElement("div");
   for (var i = 0; i < height; i++) {
