@@ -1,5 +1,5 @@
 window.onload = function() {
-  var canvas = new PixelCanvas(10, 10, 30, $("body"), function(px) {
+  var canvas = new PixelCanvas(40, 40, 5, $("body"), function(px) {
     px.onclick = function() {
       this.style.backgroundColor = "red";
     };
