@@ -8,6 +8,52 @@
 */
 function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
 
+  // Initialize fields
+  this.width = width;
+  this.height = height;
+
+  // Every framerate ms, advance all clips & redraw the canvas
+  this.start = function() {
+    if (framerate > 0 && !this.drawTimer) {
+      this.drawTimer = setInterval(function() {
+        console.log("draw");
+      }, framerate);
+    }
+  }
+
+  this.start();
+
+  // Stop the timer that is currently going
+  this.stop = function() {
+    if (this.drawTimer) {
+      clearInterval(this.drawTimer);
+      this.drawTimer = null;
+    }
+  }
+
+  this.clips = {};
+
+  // Add a new clip to the canvas
+  this.add = function(clip, row, col) {
+    this.clips[clip] = {"row":row, "col":col};
+  }
+
+  this.translate = function(clip, rowDelta, colDelta) {
+    if (this.clips[clip]) {
+      this.clips[clip]["row"] += rowDelta;
+      this.clips[clip]["col"] += colDelta;
+    }
+  }
+
+  this.set = function(clip, row, col) {
+    if (this.clips[clip]) {
+      this.clips[clip]["row"] = row;
+      this.clips[clip]["col"] = col;
+    }
+  }
+
+  // ======================================================
+
   // Generate the DOM object
   var box = document.createElement("div");
   for (var i = 0; i < height; i++) {
@@ -30,22 +76,4 @@ function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
   }
   box.id = "PixelCanvas";
   dom.appendChild(box);
-
-  // Initialize everything for the PixelCanvas object
-  this.width = width;
-  this.height = height;
-
-  this.framerate = framerate;
-  if (framerate > 0) {
-    this.drawTimer = setInterval(function() {
-      console.log("draw");
-    }, framerate);
-  }
-
-  this.clips = [];
-  this.add = function(clip, row, col) {
-    clip["row"] = row || 0;
-    clop["col"] = col || 0;
-    this.clips.push(clip);
-  }
 }
