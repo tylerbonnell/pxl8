@@ -11,12 +11,20 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   // Initialize fields
   this.width = width;
   this.height = height;
-  this.clips = [];  // contains Animation objects
+
+  /*
+    This array contains all the elements that will be rendered on
+    the canvas. It can be directly manipulated by the client, if
+    they wish. redraw() must be called in order for changes to appear
+    on the canvas.
+  */
+  this.clips = [];
 
   this.update = function() {
 
   }
 
+  // Redraws all the pixels, based on the clips[] array.
   this.redraw = function() {
     var arr = [];
     for (var i = 0; i < this.height; i++) {
@@ -101,6 +109,12 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
 }
 
 
+/*
+  Constructor for an Animation object
+  Shouldn't be constructed directly, but is returned when add()
+  is called on a PixelCanvas. Has operations with which the user
+  can manipulate it.
+*/
 function Animation(anim, row, col) {
   this.anim = anim;
   this.row = row;
@@ -120,15 +134,19 @@ function Animation(anim, row, col) {
     return result;
   }
 
+  // Advances to the next frame of the animation
+  // cycles to the beginning when it passes the end
   this.nextFrame = function() {
     this.frame = (this.frame + 1) % anim["frames"].length;
   }
 
+  // Translates the object on the canvas
   this.translate = function(rowDelta, colDelta) {
     this.row += rowDelta;
     this.col += colDelta;
   }
 
+  // Sets the position on the canvas
   this.set = function(row, col) {
     this.row = row;
     this.col = col;
