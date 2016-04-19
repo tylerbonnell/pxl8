@@ -8,6 +8,8 @@ var anim = {
               ["black", "", "black"]]]
 };
 
+var anim_min={"frames":[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
+
 
 var canvas;
 window.onload = function() {
@@ -18,6 +20,8 @@ window.onload = function() {
   });
 
   canvas.add(anim);
+  canvas.add(anim, 10, 5);
+  canvas.add(anim_min, 5, 10);
   canvas.start();
 };
 
