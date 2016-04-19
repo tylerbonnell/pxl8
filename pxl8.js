@@ -6,7 +6,9 @@
   a pixel object as a parameter and applies that function to
   each pixel. (Use this for setting listeners on each pixel).
 */
-function PixelCanvas(width, height, pxSize, dom, pixelFunction) {
+function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
+
+  // Generate the DOM object
   var box = document.createElement("div");
   for (var i = 0; i < height; i++) {
     var row = document.createElement("div");
@@ -28,4 +30,20 @@ function PixelCanvas(width, height, pxSize, dom, pixelFunction) {
   }
   box.id = "PixelCanvas";
   dom.appendChild(box);
+
+  // Initialize everything for the PixelCanvas object
+  this.width = width;
+  this.height = height;
+
+  this.framerate = framerate;
+  this.drawTimer = invokeRepeating(function() {
+    console.log("draw");
+  }, framerate);
+
+  this.clips = [];
+  this.add = function(clip, row, col) {
+    clip["row"] = row || 0;
+    clop["col"] = col || 0;
+    this.clips.push(clip);
+  }
 }
