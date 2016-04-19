@@ -44,7 +44,9 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
     for (var i = 0; i < this.height; i++) {
       for (var j = 0; j < this.width; j++) {
-        document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
+        if (arr[i][j] && arr[i][j] != "") {
+          document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
+        }
       }
     }
   }

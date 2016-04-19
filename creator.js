@@ -1,8 +1,8 @@
 // An example of an animation object
 var anim = {
-  "frames": [[["white", "black", "white"],
+  "frames": [[["", "black", ""],
               ["black", "black", "black"],
-              ["white", "black", "white"]]]
+              ["", "black", ""]]]
 };
 
 
