@@ -6,17 +6,65 @@
   a pixel object as a parameter and applies that function to
   each pixel. (Use this for setting listeners on each pixel).
 */
-function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
+function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pixelFunction) {
 
   // Initialize fields
   this.width = width;
   this.height = height;
+  this.clips = {};
+
+  this.update = function() {
+    var pxs = {};
+    for (var cl in this.clips) {
+      var fr = cl["frames"][this.clips[cl]["frame"]];  // get the frame to draw
+      /* do some shit here */
+    }
+  }
+
+  this.redraw = function() {
+    var arr = [];
+    for (var i = 0; i < this.height; i++) {
+      arr[i] = [];
+      for (var j = 0; j < this.width; j++) {
+        arr[i][j] = backgroundColor;
+      }
+    }
+    for (var cl in this.clips) {
+      var clipPts = this.getClipPts(cl);
+      for (var i = 0; i < clipPts.length; i++) {
+        arr[clipPts["row"]][clipPts["col"]] = clipPts["color"];
+      }
+    }
+    for (var i = 0; i < this.height; i++) {
+      for (var j = 0; j < this.width; j++) {
+        document.getElementById("px_" + i + "_" + j).style.color = arr[i][j];
+      }
+    }
+  }
+
+  this.getClipPts = function(clip) {
+    var result = [];
+    if (this.clips[clip]) {
+      var clipW = clip["frames"][0][0].length;
+      var clipH = clip["frames"][0].length;
+      for (var i = 0; i < clipW; i++) {
+        for (var j = 0; j < clipH; j++) {
+          result[i * clipW + j] =
+              {"row": j, "col": i, "color": clip["frames"][this.clips[clip]["frame"]][j][i]};
+        }
+      }
+    }
+    return result;
+  }
 
   // Every framerate ms, advance all clips & redraw the canvas
   this.start = function() {
     if (framerate > 0 && !this.drawTimer) {
       this.drawTimer = setInterval(function() {
         console.log("draw");
+        for (var cl in this.clips) {
+          this.clips[cl]["frame"] = (this.clips[cl]["frame"] + 1) % cl["frames"].length;
+        }
       }, framerate);
     }
   }
@@ -31,11 +79,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
     }
   }
 
-  this.clips = {};
 
   // Add a new clip to the canvas
   this.add = function(clip, row, col) {
-    this.clips[clip] = {"row":row, "col":col};
+    this.clips[clip] = {"row": row, "col": col, "frame": 0};
   }
 
   this.translate = function(clip, rowDelta, colDelta) {
@@ -64,7 +111,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
       var pixel = document.createElement("div");
       pixel.style.width = pixel.style.height = pxSize + "px";
       pixel.style.float = "left";
-      pixel.style.backgroundColor = "cornflowerblue";
+      pixel.style.backgroundColor = backgroundColor;
       pixel.id = "px_" + i + "_" + j;
       row.appendChild(pixel);
       if (pixelFunction) {
@@ -76,4 +123,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
   }
   box.id = "PixelCanvas";
   dom.appendChild(box);
+
+
+  this.redraw();
 }
