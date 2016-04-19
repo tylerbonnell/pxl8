@@ -36,9 +36,11 @@ function PixelCanvas(width, height, pxSize, dom, framerate, pixelFunction) {
   this.height = height;
 
   this.framerate = framerate;
-  this.drawTimer = invokeRepeating(function() {
-    console.log("draw");
-  }, framerate);
+  if (framerate > 0) {
+    this.drawTimer = setInterval(function() {
+      console.log("draw");
+    }, framerate);
+  }
 
   this.clips = [];
   this.add = function(clip, row, col) {
