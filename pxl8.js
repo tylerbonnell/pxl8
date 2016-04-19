@@ -11,14 +11,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   // Initialize fields
   this.width = width;
   this.height = height;
-  this.clips = {};
+  this.clips = [];  // contains Animation objects
 
   this.update = function() {
-    var pxs = {};
-    for (var cl in this.clips) {
-      var fr = cl["frames"][this.clips[cl]["frame"]];  // get the frame to draw
-      /* do some shit here */
-    }
+
   }
 
   this.redraw = function() {
@@ -29,47 +25,35 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         arr[i][j] = backgroundColor;
       }
     }
-    for (var cl in this.clips) {
-      var clipPts = this.getClipPts(cl);
-      for (var i = 0; i < clipPts.length; i++) {
-        arr[clipPts["row"]][clipPts["col"]] = clipPts["color"];
+    for (var i = 0; i < this.clips.length; i++) {
+      var pts = this.clips[i].getClipPts();
+      for (var j = 0; j < pts.length; j++) {
+        if (pts[j]["row"] >= 0 && pts[j]["row"] < this.width &&
+            pts[j]["col"] >= 0 && pts[j]["col"] < this.height) {
+          arr[pts[j]["row"]][pts[j]["col"]] = pts[j]["color"];
+        }
       }
     }
     for (var i = 0; i < this.height; i++) {
       for (var j = 0; j < this.width; j++) {
-        document.getElementById("px_" + i + "_" + j).style.color = arr[i][j];
+        document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
       }
     }
-  }
-
-  this.getClipPts = function(clip) {
-    var result = [];
-    if (this.clips[clip]) {
-      var clipW = clip["frames"][0][0].length;
-      var clipH = clip["frames"][0].length;
-      for (var i = 0; i < clipW; i++) {
-        for (var j = 0; j < clipH; j++) {
-          result[i * clipW + j] =
-              {"row": j, "col": i, "color": clip["frames"][this.clips[clip]["frame"]][j][i]};
-        }
-      }
-    }
-    return result;
   }
 
   // Every framerate ms, advance all clips & redraw the canvas
   this.start = function() {
     if (framerate > 0 && !this.drawTimer) {
+      var canv = this;
       this.drawTimer = setInterval(function() {
-        console.log("draw");
-        for (var cl in this.clips) {
-          this.clips[cl]["frame"] = (this.clips[cl]["frame"] + 1) % cl["frames"].length;
+        for (var i = 0; i < canv.clips.length; i++) {
+          canv.clips[i].nextFrame();
         }
+        canv.redraw();
       }, framerate);
     }
+    this.redraw();
   }
-
-  this.start();
 
   // Stop the timer that is currently going
   this.stop = function() {
@@ -80,23 +64,13 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   }
 
 
-  // Add a new clip to the canvas
+  // Add a new clip to the canvas, return the Animation object
   this.add = function(clip, row, col) {
-    this.clips[clip] = {"row": row, "col": col, "frame": 0};
-  }
-
-  this.translate = function(clip, rowDelta, colDelta) {
-    if (this.clips[clip]) {
-      this.clips[clip]["row"] += rowDelta;
-      this.clips[clip]["col"] += colDelta;
-    }
-  }
-
-  this.set = function(clip, row, col) {
-    if (this.clips[clip]) {
-      this.clips[clip]["row"] = row;
-      this.clips[clip]["col"] = col;
-    }
+    row = row || 0;
+    col = col || 0;
+    var anim = new Animation(clip, row, col);
+    this.clips.push(anim);
+    return anim;
   }
 
   // ======================================================
@@ -124,6 +98,41 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   box.id = "PixelCanvas";
   dom.appendChild(box);
 
-
-  this.redraw();
 }
+
+
+function Animation(anim, row, col) {
+  this.anim = anim;
+  this.row = row;
+  this.col = col;
+  this.frame = 0;
+  this.width = anim["frames"][0][0].length;
+  this.height = anim["frames"][0].length;
+
+  this.getClipPts = function(clip) {
+    var result = [];
+    for (var i = 0; i < this.width; i++) {
+      for (var j = 0; j < this.height; j++) {
+        result[i * this.width + j] = {"row": j + this.row, "col": i + this.col,
+            "color": this.anim["frames"][this.frame][j][i]};
+      }
+    }
+    return result;
+  }
+
+  this.nextFrame = function() {
+    this.frame = (this.frame + 1) % anim["frames"].length;
+  }
+
+  this.translate = function(rowDelta, colDelta) {
+    this.row += rowDelta;
+    this.col += colDelta;
+  }
+
+  this.set = function(row, col) {
+    this.row = row;
+    this.col = col;
+  }
+}
+
+
