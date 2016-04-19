@@ -30,7 +30,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     for (var i = 0; i < this.height; i++) {
       arr[i] = [];
       for (var j = 0; j < this.width; j++) {
-        arr[i][j] = backgroundColor;
+        arr[i][j] = "";
       }
     }
     for (var i = 0; i < this.clips.length; i++) {
@@ -44,9 +44,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
     for (var i = 0; i < this.height; i++) {
       for (var j = 0; j < this.width; j++) {
-        if (arr[i][j] && arr[i][j] != "") {
-          document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
-        }
+        document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
       }
     }
   }
@@ -95,7 +93,6 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       var pixel = document.createElement("div");
       pixel.style.width = pixel.style.height = pxSize + "px";
       pixel.style.float = "left";
-      pixel.style.backgroundColor = backgroundColor;
       pixel.id = "px_" + i + "_" + j;
       row.appendChild(pixel);
       if (pixelFunction) {
@@ -103,6 +100,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       }
     }
     row.id = "row_" + i;
+    row.style.backgroundColor = backgroundColor;
     box.appendChild(row);
   }
   box.id = "PixelCanvas";
