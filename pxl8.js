@@ -73,10 +73,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
 
 
   // Add a new clip to the canvas, return the Animation object
-  this.add = function(clip, row, col) {
-    row = row || 0;
-    col = col || 0;
-    var anim = new Animation(clip, row, col);
+  this.add = function(clip, x, y) {
+    x = x || 0;
+    y = y || 0;
+    var anim = new Animation(clip, y, x);
     this.clips.push(anim);
     return anim;
   }
@@ -141,15 +141,15 @@ function Animation(anim, row, col) {
   }
 
   // Translates the object on the canvas
-  this.translate = function(rowDelta, colDelta) {
-    this.row += rowDelta;
-    this.col += colDelta;
+  this.translate = function(dx, dy) {
+    this.row += dy;
+    this.col += dx;
   }
 
   // Sets the position on the canvas
-  this.set = function(row, col) {
-    this.row = row;
-    this.col = col;
+  this.set = function(x, y) {
+    this.row = y;
+    this.col = x;
   }
 }
 
