@@ -20,11 +20,4 @@ $(document).ready(function() {
   canvas.add(anim, 10, 5);
   canvas.add(anim_min, 5, 10);
   canvas.start();
-
-  // Color Picker Canvas
-  colorPicker = new PixelCanvas(64, 64, 3.125, $("#ColorPicker"), 0, "black", function(px) {
-    px.style.backgroundColor = "lightgreen";
-  });
-  colorPicker.add(anim_min, 5, 10);
-  colorPicker.start();
 });
