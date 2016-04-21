@@ -16,6 +16,9 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   this.width = width;
   this.height = height;
   this.pixelFunction = pixelFunction;
+  this.backgroundColor = backgroundColor;
+  this.parentNode = dom;
+  this.pxSize = pxSize;
 
   this.getPixelDOM = function(row, col) {
     return document.getElementById("c" + this.num + "_px_" + row + "_" + col);
@@ -29,7 +32,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   */
   this.clips = [];
 
+
+  // TODO: this
   this.update = function() {}
+
 
   // Redraws all the pixels, based on the clips[] array.
   // If a function is passed, applies that function after
@@ -59,6 +65,12 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         }
       }
     }
+  }
+
+  this.resize = function(newWidth, newHeight, newPixelSize) {
+    this.width = newWidth;
+    this.height = newHeight;
+    this.generateDom();
   }
 
   // Every framerate ms, advance all clips & redraw the canvas
@@ -96,27 +108,37 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   // ======================================================
 
   // Generate the DOM object
-  var box = document.createElement("div");
-  for (var i = 0; i < height; i++) {
-    var row = document.createElement("div");
-    row.style.float = "left";
-    row.style.clear = "left";
-    for (var j = 0; j < width; j++) {
-      var pixel = document.createElement("div");
-      pixel.style.width = pixel.style.height = pxSize + "px";
-      pixel.style.float = "left";
-      pixel.id = "c" + this.num + "_px_" + i + "_" + j;
-      row.appendChild(pixel);
+  this.generateDom = function() {
+    var box;
+    if (this.canvas) {
+      box = this.canvas;
+      box.innerHTML = "";
+    } else {
+      this.canvas = box = document.createElement("div");
     }
-    row.id = "c" + this.num + "_row_" + i;
-    row.style.backgroundColor = backgroundColor;
-    box.appendChild(row);
+    for (var i = 0; i < this.height; i++) {
+      var row = document.createElement("div");
+      row.style.float = "left";
+      row.style.clear = "left";
+      for (var j = 0; j < this.width; j++) {
+        var pixel = document.createElement("div");
+        pixel.style.width = pixel.style.height = this.pxSize + "px";
+        pixel.style.float = "left";
+        pixel.id = "c" + this.num + "_px_" + i + "_" + j;
+        row.appendChild(pixel);
+      }
+      row.id = "c" + this.num + "_row_" + i;
+      row.style.backgroundColor = this.backgroundColor;
+      box.appendChild(row);
+    }
+    box.className = "PixelCanvas";
+    box.id = "PixelCanvas_" + this.num;
+    this.parentNode.append(box);
   }
-  box.className = "PixelCanvas";
-  box.id = "PixelCanvas_" + this.num;
-  dom.append(box);
 
+  this.generateDom();
 }
+
 
 
 /*

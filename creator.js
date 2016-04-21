@@ -20,4 +20,8 @@ $(document).ready(function() {
   canvas.add(anim, 10, 5);
   canvas.add(anim_min, 5, 10);
   canvas.start();
+
+  $('#cp1').colorpicker({
+    format: "hex"
+  });
 });
