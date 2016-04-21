@@ -1,3 +1,5 @@
+var numOfCanvases = 0;
+
 /*
   Constructor for a pixel canvas object
   Parameters: width/height of canvas in pixels, size of pixels
@@ -7,10 +9,16 @@
   each pixel. (Use this for setting listeners on each pixel).
 */
 function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pixelFunction) {
+  numOfCanvases++;
 
   // Initialize fields
   this.width = width;
   this.height = height;
+  this.pixelFunction = pixelFunction;
+
+  this.getPixelDOM = function(row, col) {
+    return document.getElementById("c" + numOfCanvases + "_px_" + row + "_" + col);
+  };
 
   /*
     This array contains all the elements that will be rendered on
@@ -20,31 +28,30 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   */
   this.clips = [];
 
-  this.update = function() {
-
-  }
+  this.update = function() {}
 
   // Redraws all the pixels, based on the clips[] array.
-  this.redraw = function() {
+  this.redraw = function(functionToApply) {
+
     var arr = [];
     for (var i = 0; i < this.height; i++) {
       arr[i] = [];
       for (var j = 0; j < this.width; j++) {
         arr[i][j] = "";
-      }
-    }
-    for (var i = 0; i < this.clips.length; i++) {
-      var pts = this.clips[i].getClipPts();
-      for (var j = 0; j < pts.length; j++) {
-        if (pts[j]["row"] >= 0 && pts[j]["row"] < this.width &&
-            pts[j]["col"] >= 0 && pts[j]["col"] < this.height) {
-          arr[pts[j]["row"]][pts[j]["col"]] = pts[j]["color"];
+        this.getPixelDOM(i, j).style.backgroundColor = arr[i][j];
+        if (functionToApply) {
+          functionToApply(this.getPixelDOM(i, j));
         }
       }
     }
-    for (var i = 0; i < this.height; i++) {
-      for (var j = 0; j < this.width; j++) {
-        document.getElementById("px_" + i + "_" + j).style.backgroundColor = arr[i][j];
+
+    for (var i = 0; i < this.clips.length; i++) {
+      var pts = this.clips[i].getClipPts();  // for each of the clips, get all the solid points
+      for (var j = 0; j < pts.length; j++) {  // for each of those, update the div's color
+        if (pts[j]["row"] >= 0 && pts[j]["row"] < this.width &&
+            pts[j]["col"] >= 0 && pts[j]["col"] < this.height) {
+          this.getPixelDOM(pts[j]["row"], pts[j]["col"]).style.backgroundColor = pts[j]["color"];
+        }
       }
     }
   }
@@ -57,10 +64,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         for (var i = 0; i < canv.clips.length; i++) {
           canv.clips[i].nextFrame();
         }
-        canv.redraw();
+        canv.redraw(this.pixelFunction);
       }, framerate);
     }
-    this.redraw();
+    this.redraw(this.pixelFunction);
   }
 
   // Stop the timer that is currently going
@@ -93,17 +100,15 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       var pixel = document.createElement("div");
       pixel.style.width = pixel.style.height = pxSize + "px";
       pixel.style.float = "left";
-      pixel.id = "px_" + i + "_" + j;
+      pixel.id = "c" + numOfCanvases + "_px_" + i + "_" + j;
       row.appendChild(pixel);
-      if (pixelFunction) {
-        pixelFunction(pixel);
-      }
     }
-    row.id = "row_" + i;
+    row.id = "c" + numOfCanvases + "_row_" + i;
     row.style.backgroundColor = backgroundColor;
     box.appendChild(row);
   }
-  box.id = "PixelCanvas";
+  box.className = "PixelCanvas";
+  box.id = "PixelCanvas_" + numOfCanvases;
   dom.appendChild(box);
 
 }
