@@ -13,7 +13,7 @@ var anim_min={"frames":[[["","black",""],["black","black","black"],["","black","
 
 var canvas;
 var colorPicker;
-window.onload = function() {
+$(document).ready(function() {
   // Display Canvas
   canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 1000 / 3, "cornflowerblue");
   canvas.add(anim);
@@ -27,8 +27,4 @@ window.onload = function() {
   });
   colorPicker.add(anim_min, 5, 10);
   colorPicker.start();
-};
-
-function $(el) {
-  return document.querySelector(el);
-}
+});

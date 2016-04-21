@@ -114,7 +114,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   }
   box.className = "PixelCanvas";
   box.id = "PixelCanvas_" + this.num;
-  dom.appendChild(box);
+  dom.append(box);
 
 }
 
