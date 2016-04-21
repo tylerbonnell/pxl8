@@ -15,7 +15,7 @@ var canvas;
 var colorPicker;
 $(document).ready(function() {
   // Display Canvas
-  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 1000 / 3, "cornflowerblue");
+  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 1000 / 3, "#30a5ff");
   canvas.add(anim);
   canvas.add(anim, 10, 5);
   canvas.add(anim_min, 5, 10);
