@@ -22,9 +22,10 @@ window.onload = function() {
   canvas.start();
 
   // Color Picker Canvas
-  colorPicker = new PixelCanvas(64, 64, 3.125, $("#ColorPicker"), 0, "cornflowerblue", function(px) {
-    px.style.backgroundColor = "red";
+  colorPicker = new PixelCanvas(64, 64, 3.125, $("#ColorPicker"), 0, "black", function(px) {
+    px.style.backgroundColor = "lightgreen";
   });
+  colorPicker.add(anim_min, 5, 10);
   colorPicker.start();
 };
 
