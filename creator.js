@@ -13,7 +13,7 @@ var anim_min={"frames":[[["","black",""],["black","black","black"],["","black","
 
 var canvas;
 window.onload = function() {
-  canvas = new PixelCanvas(40, 40, 5, $("body"), 1000 / 3, "cornflowerblue", function(px) {
+  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 1000 / 3, "cornflowerblue", function(px) {
     px.onclick = function() {
       this.style.backgroundColor = "red";
     };
