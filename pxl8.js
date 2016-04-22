@@ -38,10 +38,20 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   */
   this.updatePoints = {};
 
-  this.updatePointsFor = function(animation) {
+  // Marks all the points occupied by animation to be redrawn
+  // If clear is true, sets all points it occupies to be empty
+  this.updatePointsFor = function(animation, clear) {
     var pts = animation.getClipPts();
     for (var i = 0; i < pts.length; i++) {
-      this.updatePoints["c" + this.num + "_px_" + pts[i]["row"] + "_" + pts[i]["col"]] = pts[i]["color"];
+      this.updatePoints["c" + this.num + "_px_" + pts[i]["row"] + "_" + pts[i]["col"]] =
+          clear ? "" : pts[i]["color"];
+    }
+  }
+
+  // Updates all the points that are occupied by animation clips
+  this.updateAllClips = function() {
+    for (var i = 0; i < this.clips.length; i++) {
+      this.updatePointsFor(this.clips[i]);
     }
   }
 
@@ -54,6 +64,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   }
 
   // Redraws all the pixels, based on the clips[] array.
+  // In general, update() should be used instead of this.
   this.redraw = function() {
     updatePoints = {};
     var arr = [];
@@ -91,8 +102,8 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       this.drawTimer = setInterval(function() {
         for (var i = 0; i < canv.clips.length; i++) {
           canv.clips[i].nextFrame();
-          canv.updatePointsFor(canv.clips[i]);
         }
+        canv.updateAllClips();
         canv.update();
       }, framerate);
     }
@@ -112,7 +123,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   this.add = function(clip, x, y) {
     x = x || 0;
     y = y || 0;
-    var anim = new Animation(clip, y, x);
+    var anim = new Animation(this, clip, y, x);
     this.clips.push(anim);
     return anim;
   }
@@ -141,7 +152,6 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         row.appendChild(pixel);
       }
       row.id = "c" + this.num + "_row_" + i;
-      row.style.backgroundColor = this.backgroundColor;
       box.appendChild(row);
 
       if (this.pixelFunction) {
@@ -150,6 +160,9 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
     box.className = "PixelCanvas";
     box.id = "PixelCanvas_" + this.num;
+    box.style.overflow = "hidden";
+    box.style.width = this.width * this.pxSize + "px";
+    box.style.backgroundColor = this.backgroundColor;
     this.parentNode.append(box);
   }
 
@@ -164,7 +177,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   is called on a PixelCanvas. Has operations with which the user
   can manipulate it.
 */
-function Animation(anim, row, col) {
+function Animation(canvas, anim, row, col) {
   this.anim = anim;
   this.row = row;
   this.col = col;
@@ -172,6 +185,7 @@ function Animation(anim, row, col) {
   this.width = anim["frames"][0][0].length;
   this.height = anim["frames"][0].length;
   this.frameCount = anim["frames"].length;
+  this.canvas = canvas;
 
   this.getClipPts = function() {
     var result = [];
@@ -192,14 +206,15 @@ function Animation(anim, row, col) {
 
   // Translates the object on the canvas
   this.translate = function(dx, dy) {
-    this.row += dy;
-    this.col += dx;
+    this.set(this.col + dx, this.row = dy);
   }
 
   // Sets the position on the canvas
   this.set = function(x, y) {
+    canvas.updatePointsFor(this, true);  // clear the points this occupies
     this.row = y;
     this.col = x;
+    canvas.updatePointsFor(this);
   }
 }
 
