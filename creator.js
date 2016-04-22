@@ -8,6 +8,7 @@ var anim = {
               ["black", "", "black"]]]
 };
 
+// A minified version of the above animation object
 var anim_min={"frames":[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
 
 
