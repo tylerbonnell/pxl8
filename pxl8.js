@@ -150,13 +150,12 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         pixel.style.float = "left";
         pixel.id = "c" + this.num + "_px_" + i + "_" + j;
         row.appendChild(pixel);
+        if (this.pixelFunction) {
+          this.pixelFunction(pixel);
+        }
       }
       row.id = "c" + this.num + "_row_" + i;
       box.appendChild(row);
-
-      if (this.pixelFunction) {
-        this.pixelFunction(pixel);
-      }
     }
     box.className = "PixelCanvas";
     box.id = "PixelCanvas_" + this.num;
