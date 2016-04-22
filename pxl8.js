@@ -32,25 +32,36 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   */
   this.clips = [];
 
+  /*
+    This dictionary maps keys (in the form c#_px_row_col eg c2_px_3_8)
+    to colors that need to be updated.
+  */
+  this.updatePoints = {};
 
-  // TODO: this
-  this.update = function() {}
+  this.updatePointsFor = function(animation) {
+    var pts = animation.getClipPts();
+    for (var i = 0; i < pts.length; i++) {
+      this.updatePoints["c" + this.num + "_px_" + pts[i]["row"] + "_" + pts[i]["col"]] = pts[i]["color"];
+    }
+  }
 
+  // Updates pixels that have changed (to make it so a pixel is considered
+  // "changed", call updatePointsFor(clip) to register the current points
+  this.update = function() {
+    for (key in this.updatePoints) {
+      document.getElementById(key).style.backgroundColor = this.updatePoints[key];
+    }
+  }
 
   // Redraws all the pixels, based on the clips[] array.
-  // If a function is passed, applies that function after
-  // pixel color is set initially back to the bg color
-  this.redraw = function(functionToApply) {
-
+  this.redraw = function() {
+    updatePoints = {};
     var arr = [];
     for (var i = 0; i < this.height; i++) {
       arr[i] = [];
       for (var j = 0; j < this.width; j++) {
         arr[i][j] = "";
         this.getPixelDOM(i, j).style.backgroundColor = arr[i][j];
-        if (functionToApply) {
-          functionToApply(this.getPixelDOM(i, j));
-        }
       }
     }
 
@@ -80,11 +91,12 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       this.drawTimer = setInterval(function() {
         for (var i = 0; i < canv.clips.length; i++) {
           canv.clips[i].nextFrame();
+          canv.updatePointsFor(canv.clips[i]);
         }
-        canv.redraw();
+        canv.update();
       }, framerate);
     }
-    this.redraw(this.pixelFunction);
+    this.redraw();
   }
 
   // Stop the timer that is currently going
@@ -107,7 +119,8 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
 
   // ======================================================
 
-  // Generate the DOM object
+  // Generate the DOM object and apply the given pixelFunction
+  // to each pixel, if one is given
   this.generateDom = function() {
     var box;
     if (this.canvas) {
@@ -130,6 +143,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
       row.id = "c" + this.num + "_row_" + i;
       row.style.backgroundColor = this.backgroundColor;
       box.appendChild(row);
+
+      if (this.pixelFunction) {
+        this.pixelFunction(pixel);
+      }
     }
     box.className = "PixelCanvas";
     box.id = "PixelCanvas_" + this.num;
@@ -154,8 +171,9 @@ function Animation(anim, row, col) {
   this.frame = 0;
   this.width = anim["frames"][0][0].length;
   this.height = anim["frames"][0].length;
+  this.frameCount = anim["frames"].length;
 
-  this.getClipPts = function(clip) {
+  this.getClipPts = function() {
     var result = [];
     for (var i = 0; i < this.width; i++) {
       for (var j = 0; j < this.height; j++) {
@@ -169,7 +187,7 @@ function Animation(anim, row, col) {
   // Advances to the next frame of the animation
   // cycles to the beginning when it passes the end
   this.nextFrame = function() {
-    this.frame = (this.frame + 1) % anim["frames"].length;
+    this.frame = (this.frame + 1) % this.frameCount;
   }
 
   // Translates the object on the canvas
