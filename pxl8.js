@@ -197,6 +197,12 @@ function Animation(canvas, anim, row, col) {
     return result;
   }
 
+  this.getPoint = function() {
+    var result = {};
+    result.x = this.col;
+    result.y = this.row;
+  }
+
   // Advances to the next frame of the animation
   // cycles to the beginning when it passes the end
   this.nextFrame = function() {

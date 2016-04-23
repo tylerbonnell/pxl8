@@ -14,10 +14,22 @@ var anim_min={"frames":[[["","black",""],["black","black","black"],["","black","
 
 var canvas;
 var colorPicker;
+var mouseDown;
 $(document).ready(function() {
+  document.onmousedown = function() { mouseDown = true; }
+  document.onmouseup = function() { mouseDown = false; }
+
   // Display Canvas
-  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 1000 / 3, "#30a5ff", function(px) {
+  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 0, "#30a5ff", function(px) {
+    px.onclick = function() {
+      console.log($("#cp1").data('colorpicker').color.toHex());
+    }
+    px.ondragstart = function() { return false; }
+    px.ondrop = function() { return false; }
     px.onmouseenter = function() {
+      if (mouseDown) {
+        this.style.backgroundColor = $("#cp1").data('colorpicker').color.toHex();
+      }
       this.style.boxShadow = "0 0 1px black inset";
     }
     px.onmouseleave= function() {
