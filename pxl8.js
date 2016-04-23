@@ -159,6 +159,8 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         if (this.pixelFunction) {
           this.pixelFunction(pixel);
         }
+        pixel.ondragstart = function() { return false; }
+        pixel.ondrop = function() { return false; }
       }
       row.id = "c" + this.num + "_row_" + i;
       box.appendChild(row);

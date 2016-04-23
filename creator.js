@@ -23,8 +23,6 @@ $(document).ready(function() {
 
   // Display Canvas
   canvas = new PixelCanvas(width, height, pxSize, $("#PixelBox"), 0, "#fff", function(px) {
-    px.ondragstart = function() { return false; }
-    px.ondrop = function() { return false; }
     px.onmousedown = function() {
       colorPixel(this, true);
     }
