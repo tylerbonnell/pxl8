@@ -128,6 +128,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     return anim;
   }
 
+  this.hideCursor = function() {
+    this.canvas.style.cursor = "none";
+  }
+
   // ======================================================
 
   // Generate the DOM object and apply the given pixelFunction

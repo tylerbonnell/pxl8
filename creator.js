@@ -22,7 +22,7 @@ $(document).ready(function() {
   var width = 40, height = 40, pxSize = 5;
 
   // Display Canvas
-  canvas = new PixelCanvas(width, height, pxSize, $("#PixelBox"), 0, "#30a5ff", function(px) {
+  canvas = new PixelCanvas(width, height, pxSize, $("#PixelBox"), 0, "#fff", function(px) {
     px.ondragstart = function() { return false; }
     px.ondrop = function() { return false; }
     px.onmousedown = function() {
@@ -37,7 +37,9 @@ $(document).ready(function() {
     }
   });
 
-  canvas.canvas.style.cursor = "none";  // hide cursor
+  canvas.hideCursor();
+  canvas.canvas.style.border = "1px solid #eee"
+  canvas.canvas.style.width = parseInt(canvas.canvas.style.width) + 2 + "px";
   canvas.start();
 
   $("#cp1").colorpicker({
