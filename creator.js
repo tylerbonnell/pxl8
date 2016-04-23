@@ -28,7 +28,7 @@ $(document).ready(function() {
     px.onmousedown = function() {
       colorPixel(this, true);
     }
-    px.onmouseenter = px.onmouseenter = function() {
+    px.onmouseenter = function() {
       this.style.boxShadow = "0 0 1px black inset";
       colorPixel(this);
     }
@@ -38,9 +38,6 @@ $(document).ready(function() {
   });
 
   canvas.canvas.style.cursor = "none";  // hide cursor
-  canvas.add(anim);
-  canvas.add(anim, 10, 5);
-  canvas.add(anim_min, 5, 10);
   canvas.start();
 
   $("#cp1").colorpicker({
