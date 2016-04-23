@@ -92,6 +92,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   this.resize = function(newWidth, newHeight, newPixelSize) {
     this.width = newWidth;
     this.height = newHeight;
+    this.pxSize = newPixelSize ? newPixelSize : this.pxSize;
     this.generateDom();
   }
 
