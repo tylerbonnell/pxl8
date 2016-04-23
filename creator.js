@@ -18,14 +18,16 @@ var mouseDown;
 $(document).ready(function() {
   document.onmousedown = function() { mouseDown = true; }
   document.onmouseup = function() { mouseDown = false; }
+  
+  var width = 40, height = 40, pxSize = 5;
 
   // Display Canvas
-  canvas = new PixelCanvas(40, 40, 5, $("#PixelBox"), 0, "#30a5ff", function(px) {
+  canvas = new PixelCanvas(width, height, pxSize, $("#PixelBox"), 0, "#30a5ff", function(px) {
+    px.ondragstart = function() { return false; }
+    px.ondrop = function() { return false; }
     px.onclick = function() {
       console.log($("#cp1").data('colorpicker').color.toHex());
     }
-    px.ondragstart = function() { return false; }
-    px.ondrop = function() { return false; }
     px.onmouseenter = function() {
       if (mouseDown) {
         this.style.backgroundColor = $("#cp1").data('colorpicker').color.toHex();
@@ -36,7 +38,8 @@ $(document).ready(function() {
       this.style.boxShadow = "none";
     }
   });
-  canvas.canvas.style.cursor = "none";
+
+  canvas.canvas.style.cursor = "none";  // hide cursor
   canvas.add(anim);
   canvas.add(anim, 10, 5);
   canvas.add(anim_min, 5, 10);
