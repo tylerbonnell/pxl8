@@ -45,6 +45,15 @@ $(document).ready(function() {
   $("#cp1").colorpicker({
     format: "hex"
   });
+
+  $("#resizeButt").click(function() {
+    var newW = $("#wBox").val();
+    var newH = $("#hBox").val();
+    var newPx = $("#pxBox").val();
+    console.log(newW + "  " + newH + "  " + newPx);
+    canvas.resize(newW, newH, newPx);
+    canvas.canvas.style.width = parseInt(canvas.canvas.style.width) + 2 + "px";
+  });
 });
 
 function colorPixel(px, ignoreMouseDown) {

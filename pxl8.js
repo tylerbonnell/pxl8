@@ -94,6 +94,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     this.height = newHeight;
     this.pxSize = newPixelSize ? newPixelSize : this.pxSize;
     this.generateDom();
+    this.redraw();
   }
 
   // Every framerate ms, advance all clips & redraw the canvas
