@@ -18,21 +18,19 @@ var mouseDown;
 $(document).ready(function() {
   document.onmousedown = function() { mouseDown = true; }
   document.onmouseup = function() { mouseDown = false; }
-  
+
   var width = 40, height = 40, pxSize = 5;
 
   // Display Canvas
   canvas = new PixelCanvas(width, height, pxSize, $("#PixelBox"), 0, "#30a5ff", function(px) {
     px.ondragstart = function() { return false; }
     px.ondrop = function() { return false; }
-    px.onclick = function() {
-      console.log($("#cp1").data('colorpicker').color.toHex());
+    px.onmousedown = function() {
+      colorPixel(this, true);
     }
-    px.onmouseenter = function() {
-      if (mouseDown) {
-        this.style.backgroundColor = $("#cp1").data('colorpicker').color.toHex();
-      }
+    px.onmouseenter = px.onmouseenter = function() {
       this.style.boxShadow = "0 0 1px black inset";
+      colorPixel(this);
     }
     px.onmouseleave= function() {
       this.style.boxShadow = "none";
@@ -49,3 +47,9 @@ $(document).ready(function() {
     format: "hex"
   });
 });
+
+function colorPixel(px, ignoreMouseDown) {
+  if (mouseDown || ignoreMouseDown) {
+    px.style.backgroundColor = $("#cp1").data('colorpicker').color.toHex();
+  }
+}
