@@ -45,6 +45,10 @@ $(document).ready(function() {
   });
 
   $("#genButt").click(saveCurrentFrame());
+
+  setInterval(function() {
+    $("#loadButt").attr("disabled", $("#json-area").val() == "");
+  }, 100);
 });
 
 function colorPixel(px, ignoreMouseDown) {
