@@ -1,6 +1,6 @@
 // An example of an animation object
 var anim = {
-  "frames": [[["", "black", ""],
+  frames: [[["", "black", ""],
               ["black", "black", "black"],
               ["", "black", ""]],
              [["black", "", "black"],
@@ -9,7 +9,7 @@ var anim = {
 };
 
 // A minified version of the above animation object
-var anim_min={"frames":[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
+var anim_min={frames:[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
 
 
 var canvas;

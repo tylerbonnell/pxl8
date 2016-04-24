@@ -43,8 +43,8 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   this.updatePointsFor = function(animation, clear) {
     var pts = animation.getClipPts();
     for (var i = 0; i < pts.length; i++) {
-      this.updatePoints["c" + this.num + "_px_" + pts[i]["row"] + "_" + pts[i]["col"]] =
-          clear ? "" : pts[i]["color"];
+      this.updatePoints["c" + this.num + "_px_" + pts[i].row + "_" + pts[i].col] =
+          clear ? "" : pts[i].color;
     }
   }
 
@@ -79,10 +79,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     for (var i = 0; i < this.clips.length; i++) {
       var pts = this.clips[i].getClipPts();  // for each of the clips, get all the solid points
       for (var j = 0; j < pts.length; j++) {  // for each of those, update the div's color
-        if (pts[j]["row"] >= 0 && pts[j]["row"] < this.width &&
-            pts[j]["col"] >= 0 && pts[j]["col"] < this.height) {
-          if (pts[j]["color"] != "" && pts[j]["color"] != null) {
-            this.getPixelDOM(pts[j]["row"], pts[j]["col"]).style.backgroundColor = pts[j]["color"];
+        if (pts[j].row >= 0 && pts[j].row < this.width &&
+            pts[j].col >= 0 && pts[j].col < this.height) {
+          if (pts[j].color != "" && pts[j].color != null) {
+            this.getPixelDOM(pts[j].row, pts[j].col).style.backgroundColor = pts[j].color;
           }
         }
       }
@@ -134,6 +134,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     this.canvas.style.cursor = "none";
   }
 
+  this.idAtCoords = function(x, y) {
+    return "c" + this.num + "_px_" + y + "_" + x;
+  }
+
   // ======================================================
 
   // Generate the DOM object and apply the given pixelFunction
@@ -154,7 +158,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         var pixel = document.createElement("div");
         pixel.style.width = pixel.style.height = this.pxSize + "px";
         pixel.style.float = "left";
-        pixel.id = "c" + this.num + "_px_" + i + "_" + j;
+        pixel.id = this.idAtCoords(j, i);
         row.appendChild(pixel);
         if (this.pixelFunction) {
           this.pixelFunction(pixel);
@@ -189,17 +193,20 @@ function Animation(canvas, anim, row, col) {
   this.row = row;
   this.col = col;
   this.frame = 0;
-  this.width = anim["frames"][0][0].length;
-  this.height = anim["frames"][0].length;
-  this.frameCount = anim["frames"].length;
+  this.width = anim.frames[0][0].length;
+  this.height = anim.frames[0].length;
+  this.frameCount = anim.frames.length;
   this.canvas = canvas;
 
   this.getClipPts = function() {
     var result = [];
     for (var i = 0; i < this.width; i++) {
       for (var j = 0; j < this.height; j++) {
-        result[i * this.width + j] = {"row": j + this.row, "col": i + this.col,
-            "color": this.anim["frames"][this.frame][j][i]};
+        result[i * this.width + j] = {
+          row: j + this.row,
+          col: i + this.col,
+          color: this.anim.frames[this.frame][j][i]
+        };
       }
     }
     return result;
