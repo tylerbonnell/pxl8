@@ -44,7 +44,13 @@ $(document).ready(function() {
     canvas.canvas.style.width = parseInt(canvas.canvas.style.width) + 2 + "px";
   });
 
-  $("#genButt").click(saveCurrentFrame());
+  $("#genButt").click(function() {
+    saveCurrentFrame();
+    var result = {
+      frames:frames
+    }
+    $("#json-area").val(JSON.stringify(result));
+  });
 
   setInterval(function() {
     $("#loadButt").attr("disabled", $("#json-area").val() == "");
