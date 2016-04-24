@@ -52,6 +52,17 @@ $(document).ready(function() {
     canvas.resize(newW, newH, newPx);
     canvas.canvas.style.width = parseInt(canvas.canvas.style.width) + 2 + "px";
   });
+
+  $("#genButt").click(function() {
+    for (var r = 0; r < canvas.height; r++) {
+      for (var c = 0; c < canvas.width; c++) {
+        var color = $("#" + canvas.idAtCoords(c, r)).css("background-color");
+        if (color != "rgba(0, 0, 0, 0)") {
+          console.log("\"" + color  + "\"");
+        }
+      }
+    }
+  });
 });
 
 function colorPixel(px, ignoreMouseDown) {
