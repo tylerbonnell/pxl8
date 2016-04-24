@@ -1,7 +1,6 @@
 // An example minified JSON animation object
 var anim_min={frames:[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
 
-
 var canvas;
 var frames = [];
 var currentFrame = 0;
@@ -50,6 +49,11 @@ $(document).ready(function() {
       frames:frames
     }
     $("#json-area").val(JSON.stringify(result));
+  });
+
+  $("#json-area").focus(function(){
+    // Select input field contents
+    this.select();
   });
 
   setInterval(function() {
