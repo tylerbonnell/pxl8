@@ -1,19 +1,10 @@
-// An example of an animation object
-var anim = {
-  frames: [[["", "black", ""],
-              ["black", "black", "black"],
-              ["", "black", ""]],
-             [["black", "", "black"],
-              ["", "black", ""],
-              ["black", "", "black"]]]
-};
-
-// A minified version of the above animation object
+// An example minified JSON animation object
 var anim_min={frames:[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
 
 
 var canvas;
-var colorPicker;
+var frames = [];
+var currentFrame = 0;
 var mouseDown;
 $(document).ready(function() {
   document.onmousedown = function() { mouseDown = true; }
@@ -53,20 +44,23 @@ $(document).ready(function() {
     canvas.canvas.style.width = parseInt(canvas.canvas.style.width) + 2 + "px";
   });
 
-  $("#genButt").click(function() {
-    for (var r = 0; r < canvas.height; r++) {
-      for (var c = 0; c < canvas.width; c++) {
-        var color = $("#" + canvas.idAtCoords(c, r)).css("background-color");
-        if (color != "rgba(0, 0, 0, 0)") {
-          console.log("\"" + color  + "\"");
-        }
-      }
-    }
-  });
+  $("#genButt").click(saveCurrentFrame());
 });
 
 function colorPixel(px, ignoreMouseDown) {
   if (mouseDown || ignoreMouseDown) {
     px.style.backgroundColor = $("#cp1").data('colorpicker').color.toHex();
   }
+}
+
+function saveCurrentFrame() {
+  var frame = [];
+  for (var r = 0; r < canvas.height; r++) {
+    frame[r] = [];
+    for (var c = 0; c < canvas.width; c++) {
+      var color = $("#" + canvas.idAtCoords(c, r)).css("background-color");
+      frame[r][c] = color == "rgba(0, 0, 0, 0)" ? "" : color;
+    }
+  }
+  frames[currentFrame] = frame;
 }
