@@ -78,3 +78,29 @@ function saveCurrentFrame() {
   }
   frames[currentFrame] = frame;
 }
+
+// Returns a compressed string representation of an array
+function shortArr(arr) {
+  if (arr.length == 0) return "[]";
+  var result = "[" + arr[0];
+  var startSeq = arr[0];
+  var seqLength = 1;
+  for (var i = 1; i < arr.length; i++) {
+    if (arr[i] == startSeq) {
+      seqLength++;
+    } else {
+      if (seqLength > 1) {
+        result += "×" + seqLength;
+      }
+      result += "," + arr[i];
+      startSeq = arr[i];
+      seqLength = 1;
+    }
+  }
+  if (seqLength > 1) {
+    result += "×" + seqLength;
+  }
+  return result + "]";
+}
+
+
