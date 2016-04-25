@@ -45,10 +45,7 @@ $(document).ready(function() {
 
   $("#genButt").click(function() {
     saveCurrentFrame();
-    var result = {
-      frames:frames
-    }
-    $("#json-area").val(JSON.stringify(result));
+    $("#json-area").val(parseResult());
   });
 
   $("#json-area").focus(function(){
@@ -79,8 +76,28 @@ function saveCurrentFrame() {
   frames[currentFrame] = frame;
 }
 
+function parseResult() {
+  var map = {};
+  for (var f = 0; f < frames.length; f++) {
+    for (var i = 0; i < canvas.height; i++) {
+      for (var j = 0; j < canvas.width; j++) {
+        if (frames[f][i][j] != "") {
+          if (!(frames[f][i][j] in map)) {
+            map[frames[f][i][j]] = [];
+          }
+          if (!map[frames[f][i][j]][f]) {
+            map[frames[f][i][j]][f] = "";
+          }
+          map[frames[f][i][j]][f] += i + "," + j + ",";
+        }
+      }
+    }
+  }
+  return JSON.stringify(map);
+}
+
 // Returns a compressed string representation of an array
-function shortArr(arr) {
+/*function shortArr(arr) {
   if (arr.length == 0) return "[]";
   var result = "[" + arr[0];
   var startSeq = arr[0];
@@ -101,6 +118,6 @@ function shortArr(arr) {
     result += "×" + seqLength;
   }
   return result + "]";
-}
+}*/
 
 
