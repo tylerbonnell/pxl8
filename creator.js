@@ -76,6 +76,20 @@ function saveCurrentFrame() {
   frames[currentFrame] = frame;
 }
 
+/*
+  parseResult creates a compressed output string for users
+  to use in their code. The function creates an object with
+  the following properties:
+    w: the width of the canvas
+    h: the height of the canvas
+    f: a map from colors to a 2d array where the outermost array
+       represents the frame, and each internal array is an even
+       series of ints representing row,col,row,col for each point
+       which is equal to the color it is mapped to.
+  parseResult returns the JSON.stringified version of that object :)
+  users don't really need to worry about the format at all,
+  they just paste it in and it's handled by pxl8.js
+*/
 function parseResult() {
   var map = {};
   for (var f = 0; f < frames.length; f++) {
@@ -86,38 +100,13 @@ function parseResult() {
             map[frames[f][i][j]] = [];
           }
           if (!map[frames[f][i][j]][f]) {
-            map[frames[f][i][j]][f] = "";
+            map[frames[f][i][j]][f] = [];
           }
-          map[frames[f][i][j]][f] += i + "," + j + ",";
+          map[frames[f][i][j]][f].push(i);
+          map[frames[f][i][j]][f].push(j);
         }
       }
     }
   }
   return JSON.stringify({w:canvas.width,h:canvas.height,f:map});
 }
-
-// Returns a compressed string representation of an array
-/*function shortArr(arr) {
-  if (arr.length == 0) return "[]";
-  var result = "[" + arr[0];
-  var startSeq = arr[0];
-  var seqLength = 1;
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] == startSeq) {
-      seqLength++;
-    } else {
-      if (seqLength > 1) {
-        result += "×" + seqLength;
-      }
-      result += "," + arr[i];
-      startSeq = arr[i];
-      seqLength = 1;
-    }
-  }
-  if (seqLength > 1) {
-    result += "×" + seqLength;
-  }
-  return result + "]";
-}*/
-
-

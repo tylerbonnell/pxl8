@@ -189,17 +189,19 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   can manipulate it.
 */
 function Animation(canvas, anim, row, col) {
-  this.anim = parseAnimation(anim);
+  // anim is an object with a frames property which
+  // is a 3d array (outermost: frame, inner: row/col)
+  this.frameCount = 0;
+  for (key in anim.f) {  // yeah it's gross whatever
+    this.frameCount = anim.f[key].length;
+    break;
+  }
+  this.anim = parseAnimation(anim, this.frameCount);
   this.row = row;
   this.col = col;
   this.frame = 0;
   this.width = anim.w;
   this.height = anim.h;
-  this.frameCount = 0;
-  for (key in anim.f) {  // yeah it's gross whatever
-    frameCount = anim[key].length;
-    break;
-  }
   this.canvas = canvas;
 
   this.getClipPts = function() {
@@ -242,6 +244,23 @@ function Animation(canvas, anim, row, col) {
   }
 }
 
-function parseAnimation(anim) {
-
+function parseAnimation(anim, frameCount) {
+  var arr = [];
+  for (var f = 0; f < frameCount; f++) {
+    arr[f] = [];
+    for (var r = 0; r < anim.h; r++) {
+      arr[f][r] = [];
+      for (var c = 0; c < anim.w; c++) {
+        arr[f][r][c] = "";
+      }
+    }
+  }
+  for (key in anim.f) {
+    for (var i = 0; i < anim.f[key].length; i++) {  // i represents the frame we are looking at
+      for (var j = 0; j < anim.f[key][i].length; j += 2) {  // j represents the row of the pt, j+1 = col
+        arr[i][anim.f[key][i][j]][anim.f[key][i][j + 1]] = key;
+      }
+    }
+  }
+  return {frames:arr};
 }
