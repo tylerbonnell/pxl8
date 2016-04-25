@@ -189,13 +189,17 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   can manipulate it.
 */
 function Animation(canvas, anim, row, col) {
-  this.anim = anim;
+  this.anim = parseAnimation(anim);
   this.row = row;
   this.col = col;
   this.frame = 0;
-  this.width = anim.frames[0][0].length;
-  this.height = anim.frames[0].length;
-  this.frameCount = anim.frames.length;
+  this.width = anim.w;
+  this.height = anim.h;
+  this.frameCount = 0;
+  for (key in anim.f) {  // yeah it's gross whatever
+    frameCount = anim[key].length;
+    break;
+  }
   this.canvas = canvas;
 
   this.getClipPts = function() {
@@ -238,4 +242,6 @@ function Animation(canvas, anim, row, col) {
   }
 }
 
+function parseAnimation(anim) {
 
+}

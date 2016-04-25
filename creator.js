@@ -1,5 +1,5 @@
 // An example minified JSON animation object
-var anim_min={frames:[[["","black",""],["black","black","black"],["","black",""]],[["black","","black"],["","black",""],["black","","black"]]]};
+var tamagotchi = {"f":{"rgb(0, 0, 0)":["11,8,11,9,11,10,11,11,11,12,12,7,12,13,13,4,13,5,13,6,13,8,13,12,13,14,14,3,14,15,15,4,15,5,15,6,15,15,16,3,16,15,17,4,17,5,17,6,17,15,18,6,18,11,18,13,18,16,19,6,19,11,19,13,19,16,20,6,20,12,20,16,21,7,21,15,22,8,22,10,22,11,22,12,22,14,23,8,23,10,23,12,23,14,24,9,24,13,"]},"w":40,"h":40};
 
 var canvas;
 var frames = [];
@@ -93,7 +93,7 @@ function parseResult() {
       }
     }
   }
-  return JSON.stringify(map);
+  return JSON.stringify({w:canvas.width,h:canvas.height,f:map});
 }
 
 // Returns a compressed string representation of an array
