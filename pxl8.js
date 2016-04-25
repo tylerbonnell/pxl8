@@ -43,7 +43,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
   this.updatePointsFor = function(animation, clear) {
     var pts = animation.getClipPts();
     for (var i = 0; i < pts.length; i++) {
-      this.updatePoints["c" + this.num + "_px_" + pts[i].row + "_" + pts[i].col] =
+      this.updatePoints[this.idAtCoords(pts[i].col,pts[i].row)] =
           clear ? "" : pts[i].color;
     }
   }
@@ -89,6 +89,11 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
   }
 
+  this.clear = function() {
+    this.clips = [];
+    this.redraw();
+  }
+
   this.resize = function(newWidth, newHeight, newPixelSize) {
     this.width = newWidth;
     this.height = newHeight;
@@ -128,6 +133,16 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     var anim = new Animation(this, clip, y, x);
     this.clips.push(anim);
     return anim;
+  }
+
+  this.remove = function(anim) {
+    var index = this.clips.indexOf(anim);
+    if (index >= 0) {
+      this.updatePointsFor(anim, true);
+      this.clips.splice(index, 1);
+      this.updateAllClips();
+      this.update();
+    }
   }
 
   this.hideCursor = function() {
@@ -192,7 +207,8 @@ function Animation(canvas, anim, row, col) {
   // anim is an object with a frames property which
   // is a 3d array (outermost: frame, inner: row/col)
   this.frameCount = 0;
-  for (key in anim.f) {  // yeah it's gross whatever
+  for (key in anim.f) {
+    // yeah it's gross but js doesn't have a good way to check isEmpty on objects
     this.frameCount = anim.f[key].length;
     break;
   }
@@ -232,7 +248,7 @@ function Animation(canvas, anim, row, col) {
 
   // Translates the object on the canvas
   this.translate = function(dx, dy) {
-    this.set(this.col + dx, this.row = dy);
+    this.set(this.col + dx, this.row + dy);
   }
 
   // Sets the position on the canvas
@@ -244,6 +260,8 @@ function Animation(canvas, anim, row, col) {
   }
 }
 
+// Takes an animation string and the amount of frames in the
+// object, returns an object with frames: parsed 3d array of colors
 function parseAnimation(anim, frameCount) {
   var arr = [];
   for (var f = 0; f < frameCount; f++) {
