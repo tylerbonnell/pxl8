@@ -40,7 +40,7 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
 
   // Marks all the points occupied by animation to be redrawn
   // If clear is true, sets all points it occupies to be empty
-  this.updatePointsFor = function(animation, clear) {
+  this.markForUpdate = function(animation, clear) {
     var pts = animation.getClipPts();
     for (var i = 0; i < pts.length; i++) {
       this.updatePoints[this.idAtCoords(pts[i].col,pts[i].row)] =
@@ -48,10 +48,10 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
   }
 
-  // Updates all the points that are occupied by animation clips
-  this.updateAllClips = function() {
+  // Marks all the points that are occupied by animation clips
+  this.markAllForUpdate = function() {
     for (var i = 0; i < this.clips.length; i++) {
-      this.updatePointsFor(this.clips[i]);
+      this.markForUpdate(this.clips[i]);
     }
   }
 
@@ -114,7 +114,6 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
         canv.update();
       }, framerate);
     }
-    this.redraw();
   }
 
   // Stop the timer that is currently going
@@ -125,22 +124,23 @@ function PixelCanvas(width, height, pxSize, dom, framerate, backgroundColor, pix
     }
   }
 
-
   // Add a new clip to the canvas, return the Animation object
   this.add = function(clip, x, y) {
     x = x || 0;
     y = y || 0;
     var anim = new Animation(this, clip, y, x);
     this.clips.push(anim);
+    this.markForUpdate(anim);
+    this.update();
     return anim;
   }
 
   this.remove = function(anim) {
     var index = this.clips.indexOf(anim);
     if (index >= 0) {
-      this.updatePointsFor(anim, true);
+      this.markForUpdate(anim, true);  // clear this one out
       this.clips.splice(index, 1);
-      this.updateAllClips();
+      this.markAllForUpdate();  // gonna redraw the rest
       this.update();
     }
   }
