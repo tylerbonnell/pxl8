@@ -32,10 +32,13 @@ window.onload = function() {
     if (prefab.f.length == 1) {
       clearFrame();
       prefab.f[currentFrame] = {};
-    } else {
+    } else if (currentFrame > 0) {
       prevFrame();
       prefab.f.splice(currentFrame + 1, 1);
       nextFrame();
+    } else {
+      prefab.f.splice(0, 1);
+      loadPrefab();
     }
     loadPrefab();
   };
