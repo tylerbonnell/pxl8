@@ -32,12 +32,17 @@ window.onload = function() {
 
 function loadString(str) {
   prefab = JSON.parse(str);
-  for (let color in prefab.c) {
-    let pixels = prefab.c[color];
-    console.log(pixels);
-    for (let i = 0; i < pixels.length; i += 2) {
-      let pxl = $(`pxl-${pixels[i]}-${pixels[i + 1]}`);
-      pxl.style.backgroundColor = color;
+  for (let frame in prefab.c) {
+    frames[frame] = prefab.c[frame];
+    for (let color in prefab.c[frame]) {
+      if (frames > 0) continue;
+
+      let pixels = prefab.c[frame][color];
+      console.log(color);
+      for (let i = 0; i < pixels.length; i += 2) {
+        let pxl = $(`pxl-${pixels[i]}-${pixels[i + 1]}`);
+        pxl.style.backgroundColor = color;
+      }
     }
   }
 }
