@@ -3,6 +3,8 @@ const CANVAS_HEIGHT = 10;
 
 var mouseDown;
 var paintbrushColor;
+var frames;
+var currentFrame = 0;
 
 window.onload = function() {
   window.onmousedown = function() { mouseDown = true; };
@@ -14,6 +16,8 @@ window.onload = function() {
   paintbrushColor = saveColor();
 
   generateCanvas($("canvas"));
+
+  frames = [getPixels()];
 
   var pixels = $("canvas").querySelectorAll(".pxl");
   for (let i in pixels) {
@@ -38,19 +42,27 @@ function loadString(str) {
   }
 }
 
+function saveCurrentFrame() {
+  frames[currentFrame] = getPixels();
+}
+
 function saveString() {
-  pixels = getPixels();
-  var colorMap = {};
-  // make colors map to pixels
-  for (let i in pixels) {
-    colorMap[pixels[i].b] = colorMap[pixels[i].b] || [];
-    colorMap[pixels[i].b].push(pixels[i].r);
-    colorMap[pixels[i].b].push(pixels[i].c);
-  }
   var result = {};
   result.w = CANVAS_WIDTH;
   result.h = CANVAS_HEIGHT;
-  result.c = colorMap;
+  result.c = [];
+
+  for (let frame in frames) {
+    let colorMap = {};
+    let pixels = frames[frame];
+    for (let i in pixels) {
+      colorMap[pixels[i].b] = colorMap[pixels[i].b] || [];
+      colorMap[pixels[i].b].push(pixels[i].r);
+      colorMap[pixels[i].b].push(pixels[i].c);
+    }
+    result.c.push(colorMap);
+  }
+
   return JSON.stringify(result);
 }
 
