@@ -26,7 +26,19 @@ window.onload = function() {
   }
 }
 
-function frameString() {
+function loadString(str) {
+  prefab = JSON.parse(str);
+  for (let color in prefab.c) {
+    let pixels = prefab.c[color];
+    console.log(pixels);
+    for (let i = 0; i < pixels.length; i += 2) {
+      let pxl = $(`pxl-${pixels[i]}-${pixels[i + 1]}`);
+      pxl.style.backgroundColor = color;
+    }
+  }
+}
+
+function saveString() {
   pixels = getPixels();
   var colorMap = {};
   // make colors map to pixels
