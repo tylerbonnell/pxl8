@@ -4,8 +4,8 @@
   this and make it better.
 */
 
-const CANVAS_WIDTH = 10;
-const CANVAS_HEIGHT = 10;
+const CANVAS_WIDTH = 40;
+const CANVAS_HEIGHT = 30;
 
 var mouseDown;
 var paintbrushColor;
