@@ -1,3 +1,9 @@
+/*
+  This is a very hacky editor which is being used simply for the
+  creation of the pxl8 library. Once that is built, will revisit
+  this and make it better.
+*/
+
 const CANVAS_WIDTH = 10;
 const CANVAS_HEIGHT = 10;
 
@@ -5,17 +11,17 @@ var mouseDown;
 var paintbrushColor;
 var prefab = {f: [{}]};
 /*
-    Shape of prefab:
-    {
-      f: [
-        {
-          "rgb(0, 0, 0, 0)": [row, col, row, col, row, col, ...],
-          ...
-        },
+  Shape of prefab:
+  {
+    f: [
+      {
+        "rgb(0, 0, 0, 0)": [row, col, row, col, row, col, ...],
         ...
-      ]
-    }
- */
+      },
+      ...
+    ]
+  }
+*/
 var currentFrame = 0;
 
 window.onload = function() {
@@ -41,6 +47,7 @@ window.onload = function() {
       loadPrefab();
     }
     loadPrefab();
+    $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   };
   $("color-add").onclick = function() {
     prefab.f.splice(currentFrame + 1, 0, {});
@@ -59,14 +66,14 @@ function nextFrame() {
   if (currentFrame == prefab.f.length - 1) return;
   saveCurrentFrame();
   currentFrame++;
-  $("color-frame").innerHTML = "" + currentFrame;
+  $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
 }
 function prevFrame() {
   if (currentFrame == 0) return;
   saveCurrentFrame();
   currentFrame--;
-  $("color-frame").innerHTML = "" + currentFrame;
+  $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
 }
 
@@ -143,10 +150,14 @@ function generateCanvas(canvasDiv) {
   var pixels = $("canvas").querySelectorAll(".pxl");
   for (let i in pixels) {
     let p = pixels[i];
-    p.onmouseover = p.onmouseup = function() {
+    p.onmouseover = function() {
       if (mouseDown) {
         this.style.backgroundColor = paintbrushColor;
       }
+    }
+    p.onmousedown = function() {
+      mouseDown = true;
+      this.style.backgroundColor = paintbrushColor;
     }
   }
 }
