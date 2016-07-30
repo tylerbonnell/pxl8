@@ -24,6 +24,14 @@ var prefab = {f: [{}]};
 */
 var currentFrame = 0;
 
+/*
+  TOOLS
+*/
+const PAINT = "paint";
+const ERASE = "erase";
+
+var tool = PAINT;
+
 window.onload = function() {
   window.onmousedown = function() { mouseDown = true; };
   window.onmouseup = function() { mouseDown = false; };
@@ -32,6 +40,8 @@ window.onload = function() {
   $("color-set-color").onclick = function() {
     paintbrushColor = saveColor();
   };
+  $("tool-paint").onclick = function() { tool = PAINT };
+  $("tool-erase").onclick = function() { tool = ERASE };
   $("color-left-move").onclick = moveFrameLeft;
   $("color-left").onclick = prevFrame;
   $("color-right-move").onclick = moveFrameRight;
@@ -171,13 +181,21 @@ function generateCanvas(canvasDiv) {
     let p = pixels[i];
     p.onmouseover = function() {
       if (mouseDown) {
-        this.style.backgroundColor = paintbrushColor;
+        clickPixel(this);
       }
     }
     p.onmousedown = function() {
       mouseDown = true;
-      this.style.backgroundColor = paintbrushColor;
+      clickPixel(this);
     }
+  }
+}
+
+function clickPixel(pixel) {
+  if (tool == PAINT) {
+    pixel.style.backgroundColor = paintbrushColor;
+  } else if (tool == ERASE) {
+    pixel.style.backgroundColor = "";
   }
 }
 
