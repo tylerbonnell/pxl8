@@ -32,6 +32,12 @@
       #canvas {
         display: inline-block;
         background-image: url("transparent.png");
+        user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
         background-size: 10px;
         box-shadow: 0 0 1px 1px grey;
       }
@@ -42,7 +48,7 @@
       r <input id="color-r" value="0" title="r" />
       g <input id="color-g" value="0" title="g" />
       b <input id="color-b" value="0" title="b" />
-      <button id="color-save" title="save" >save</button>
+      <button id="color-set-color" title="set color" >set color</button>
       <button id="color-left-move" title="move frame left" >&lt;&lt;</button>
       <button id="color-left" title="previous frame" >&lt;</button>
       <span id="color-frame">1/1</span>

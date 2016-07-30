@@ -29,7 +29,7 @@ window.onload = function() {
   window.onmouseup = function() { mouseDown = false; };
 
   paintbrushColor = saveColor();
-  $("color-save").onclick = function() {
+  $("color-set-color").onclick = function() {
     paintbrushColor = saveColor();
   };
   $("color-left-move").onclick = moveFrameLeft;
@@ -48,7 +48,6 @@ window.onload = function() {
       loadPrefab();
     }
     loadPrefab();
-    $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   };
   $("color-add").onclick = function() {
     prefab.f.splice(currentFrame + 1, 0, {});
@@ -72,7 +71,6 @@ function nextFrame(omitSave) {
   if (omitSave != true)
     saveCurrentFrame();
   currentFrame++;
-  $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
 }
 function prevFrame(omitSave) {
@@ -80,7 +78,6 @@ function prevFrame(omitSave) {
   if (omitSave != true)
     saveCurrentFrame();
   currentFrame--;
-  $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
 }
 function moveFrameRight() {
@@ -121,6 +118,7 @@ function loadPrefab() {
       pxl.style.backgroundColor = color;
     }
   }
+  $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
 }
 
 function saveCurrentFrame() {
