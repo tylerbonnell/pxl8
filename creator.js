@@ -140,7 +140,7 @@ function generateCanvas(canvasDiv) {
   var pixels = $("canvas").querySelectorAll(".pxl");
   for (let i in pixels) {
     let p = pixels[i];
-    p.onmouseover = function() {
+    p.onmouseover = p.onmouseup = function() {
       if (mouseDown) {
         this.style.backgroundColor = paintbrushColor;
       }
