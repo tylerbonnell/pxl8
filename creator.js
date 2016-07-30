@@ -32,11 +32,12 @@ window.onload = function() {
   $("color-save").onclick = function() {
     paintbrushColor = saveColor();
   };
+  $("color-left-move").onclick = moveFrameLeft;
   $("color-left").onclick = prevFrame;
+  $("color-right-move").onclick = moveFrameRight;
   $("color-right").onclick = nextFrame;
   $("color-del").onclick = function() {
     if (prefab.f.length == 1) {
-      clearFrame();
       prefab.f[currentFrame] = {};
     } else if (currentFrame > 0) {
       prevFrame();
@@ -57,24 +58,44 @@ window.onload = function() {
     saveCurrentFrame();
     console.log(saveString());
   };
+  $("color-clear").onclick = function() {
+    prefab.f[currentFrame] = {};
+    loadPrefab();
+  };
 
   generateCanvas($("canvas"));
 }
 
 // CONTROLS
-function nextFrame() {
+function nextFrame(omitSave) {
   if (currentFrame == prefab.f.length - 1) return;
-  saveCurrentFrame();
+  if (omitSave != true)
+    saveCurrentFrame();
   currentFrame++;
   $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
 }
-function prevFrame() {
+function prevFrame(omitSave) {
   if (currentFrame == 0) return;
-  saveCurrentFrame();
+  if (omitSave != true)
+    saveCurrentFrame();
   currentFrame--;
   $("color-frame").innerHTML = `${currentFrame + 1}/${prefab.f.length}`;
   loadPrefab();
+}
+function moveFrameRight() {
+  if (currentFrame == prefab.f.length - 1) return;
+  var x = prefab.f[currentFrame];
+  prefab.f[currentFrame] = prefab.f[currentFrame + 1];
+  prefab.f[currentFrame + 1] = x;
+  nextFrame(true);
+}
+function moveFrameLeft() {
+  if (currentFrame == 0) return;
+  var x = prefab.f[currentFrame];
+  prefab.f[currentFrame] = prefab.f[currentFrame - 1];
+  prefab.f[currentFrame - 1] = x;
+  prevFrame(true);
 }
 
 function clearFrame() {
