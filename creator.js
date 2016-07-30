@@ -3,72 +3,110 @@ const CANVAS_HEIGHT = 10;
 
 var mouseDown;
 var paintbrushColor;
-var frames;
+var prefab = {f: [{}]};
+/*
+    Shape of prefab:
+    {
+      f: [
+        {
+          "rgb(0, 0, 0, 0)": [row, col, row, col, row, col, ...],
+          ...
+        },
+        ...
+      ]
+    }
+ */
 var currentFrame = 0;
 
 window.onload = function() {
   window.onmousedown = function() { mouseDown = true; };
   window.onmouseup = function() { mouseDown = false; };
 
+  paintbrushColor = saveColor();
   $("color-save").onclick = function() {
     paintbrushColor = saveColor();
   };
-  paintbrushColor = saveColor();
+  $("color-left").onclick = prevFrame;
+  $("color-right").onclick = nextFrame;
+  $("color-del").onclick = function() {
+    if (prefab.f.length == 1) {
+      clearFrame();
+      prefab.f[currentFrame] = {};
+    } else {
+      prevFrame();
+      prefab.f.splice(currentFrame + 1, 1);
+      nextFrame();
+    }
+    loadPrefab();
+  };
+  $("color-add").onclick = function() {
+    prefab.f.splice(currentFrame + 1, 0, {});
+    nextFrame();
+  };
+  $("color-export").onclick = function() {
+    saveCurrentFrame();
+    console.log(saveString());
+  };
 
   generateCanvas($("canvas"));
+}
 
-  frames = [getPixels()];
+// CONTROLS
+function nextFrame() {
+  if (currentFrame == prefab.f.length - 1) return;
+  saveCurrentFrame();
+  currentFrame++;
+  $("color-frame").innerHTML = "" + currentFrame;
+  loadPrefab();
+}
+function prevFrame() {
+  if (currentFrame == 0) return;
+  saveCurrentFrame();
+  currentFrame--;
+  $("color-frame").innerHTML = "" + currentFrame;
+  loadPrefab();
+}
 
-  var pixels = $("canvas").querySelectorAll(".pxl");
-  for (let i in pixels) {
-    let p = pixels[i];
-    p.onmouseover = function() {
-      if (mouseDown) {
-        this.style.backgroundColor = paintbrushColor;
-      }
+function clearFrame() {
+  for (var row = 0; row < CANVAS_HEIGHT; row++) {
+    for (var col = 0; col < CANVAS_WIDTH; col++) {
+      let pxl = $(`pxl-${row}-${col}`);
+      pxl.style.backgroundColor = "";
     }
   }
 }
 
 function loadString(str) {
   prefab = JSON.parse(str);
-  for (let frame in prefab.c) {
-    frames[frame] = prefab.c[frame];
-    for (let color in prefab.c[frame]) {
-      if (frames > 0) continue;
+  loadPrefab();
+}
 
-      let pixels = prefab.c[frame][color];
-      console.log(color);
-      for (let i = 0; i < pixels.length; i += 2) {
-        let pxl = $(`pxl-${pixels[i]}-${pixels[i + 1]}`);
-        pxl.style.backgroundColor = color;
-      }
+function loadPrefab() {
+  clearFrame();
+  for (let color in prefab.f[currentFrame]) {
+    let pixels = prefab.f[currentFrame][color];
+    for (let i = 0; i < pixels.length; i += 2) {
+      let pxl = $(`pxl-${pixels[i]}-${pixels[i + 1]}`);
+      pxl.style.backgroundColor = color;
     }
   }
 }
 
 function saveCurrentFrame() {
-  frames[currentFrame] = getPixels();
+  let colorMap = {};
+  let pixels = getPixels();
+  for (let i in pixels) {
+    colorMap[pixels[i].b] = colorMap[pixels[i].b] || [];
+    colorMap[pixels[i].b].push(pixels[i].r);
+    colorMap[pixels[i].b].push(pixels[i].c);
+  }
+  prefab.f[currentFrame] = colorMap;
 }
 
 function saveString() {
-  var result = {};
-  result.w = CANVAS_WIDTH;
-  result.h = CANVAS_HEIGHT;
-  result.c = [];
-
-  for (let frame in frames) {
-    let colorMap = {};
-    let pixels = frames[frame];
-    for (let i in pixels) {
-      colorMap[pixels[i].b] = colorMap[pixels[i].b] || [];
-      colorMap[pixels[i].b].push(pixels[i].r);
-      colorMap[pixels[i].b].push(pixels[i].c);
-    }
-    result.c.push(colorMap);
-  }
-
-  return JSON.stringify(result);
+  prefab.w = CANVAS_WIDTH;
+  prefab.h = CANVAS_HEIGHT;
+  return JSON.stringify(prefab);
 }
 
 function getPixels() {
@@ -98,6 +136,16 @@ function generateCanvas(canvasDiv) {
     result += "</div>";
   }
   canvasDiv.innerHTML = result;
+
+  var pixels = $("canvas").querySelectorAll(".pxl");
+  for (let i in pixels) {
+    let p = pixels[i];
+    p.onmouseover = function() {
+      if (mouseDown) {
+        this.style.backgroundColor = paintbrushColor;
+      }
+    }
+  }
 }
 
 function saveColor() {
